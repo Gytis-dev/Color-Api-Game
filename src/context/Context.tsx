@@ -1,0 +1,52 @@
+import React, { createContext, useState, useEffect } from "react";
+import { handleGetApi } from "../apis/config";
+import { ContextInterface } from "../types/globalTypes";
+import { params } from "../consts/params";
+import { username, colorName } from "../consts/params";
+
+export const AppContext = createContext<ContextInterface | null | undefined>(
+  null
+);
+export const Context = ({
+  children,
+}: {
+  children: React.ReactNode;
+}): JSX.Element => {
+  const [user, setUser] = useState<string | null>("");
+  const [data, setData] = useState<Array<unknown>>([]);
+  const [error, setError] = useState("");
+  const [color, setColor] = useState<string | null>(null);
+
+  // Context functions
+  const getUserName = (name: string) => {
+    setUser(name);
+    localStorage.setItem("currentUser", name);
+  };
+  const changeUserColor = (color: string) => {
+    setColor(color);
+    localStorage.setItem("color", color);
+  };
+  //Initial render
+  useEffect(() => {
+    handleGetApi("/board", params)
+      .then((res) => setData(res))
+      .catch((e) => setError(e));
+  }, []);
+  // Handling localstorage and updating context state
+  useEffect(() => {
+    if (username || colorName) {
+      setUser(username);
+      setColor(colorName);
+    }
+  }, []);
+
+  const value = {
+    currentUser: user,
+    fetchError: error,
+    getUserName,
+    data: data,
+    color: color,
+    changeUserColor,
+  };
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+};
