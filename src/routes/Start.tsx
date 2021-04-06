@@ -8,10 +8,9 @@ import {
   Span,
   Button,
 } from "../styles/globalStyle";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from "../context/Context";
 import { useHistory } from "react-router-dom";
-import { removeItemsFromLocalStorage } from "../consts/params";
 
 export const Start = (): JSX.Element => {
   const context = useContext(AppContext);

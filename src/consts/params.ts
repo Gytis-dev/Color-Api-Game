@@ -1,7 +1,7 @@
 export const params = {
   x: 220,
   y: 10,
-  w: 300,
+  w: 200,
   h: 200,
 };
 

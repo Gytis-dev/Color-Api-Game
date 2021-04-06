@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useMemo } from "react";
 import { AppContext } from "../context/Context";
 import styled from "styled-components";
 import { Element } from "../components/Element";
@@ -8,10 +8,12 @@ import { handleGetApi, handlePostApi } from "../apis/config";
 import { params } from "../consts/params";
 
 export const Dashboard = (): JSX.Element => {
-  const [mouse, setMouse] = useState<{ x: number | null; y: number | null }>({
-    x: null,
-    y: null,
-  });
+  const mouseState = useMemo(() => {
+    return {
+      x: 0,
+      y: 0,
+    };
+  }, []);
 
   const context = useContext(AppContext);
   const [data, setData] = useState<any>([]);
@@ -24,8 +26,8 @@ export const Dashboard = (): JSX.Element => {
     setData([
       ...data,
       {
-        x: mouse.x,
-        y: mouse.y,
+        x: mouseState.x,
+        y: mouseState.y,
         data: {
           name: context?.currentUser,
           color: context?.color,
@@ -34,8 +36,8 @@ export const Dashboard = (): JSX.Element => {
     ]);
 
     handlePostApi({
-      x: mouse.x,
-      y: mouse.y,
+      x: mouseState.x,
+      y: mouseState.y,
       name: context?.currentUser,
       color: context?.color,
     });
@@ -49,7 +51,8 @@ export const Dashboard = (): JSX.Element => {
       <MenuBar />
       <div
         onMouseMove={(e) => {
-          setMouse({ x: e.clientX, y: e.clientY });
+          mouseState.x = e.clientX;
+          mouseState.y = e.clientY;
         }}
         onClick={handlePost}
       >
