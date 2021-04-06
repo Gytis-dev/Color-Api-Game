@@ -33,5 +33,4 @@ export interface ElementInterface {
   y: number | string;
   color: string;
   name: string;
-  createdAt: string;
 }

@@ -21,27 +21,43 @@ export const Dashboard = (): JSX.Element => {
   }, [context]);
 
   const handlePost = () => {
+    setData([
+      ...data,
+      {
+        x: mouse.x,
+        y: mouse.y,
+        data: {
+          name: context?.currentUser,
+          color: context?.color,
+        },
+      },
+    ]);
+
     handlePostApi({
       x: mouse.x,
       y: mouse.y,
       name: context?.currentUser,
       color: context?.color,
     });
-    handleGetApi("/board", params).then((res) => setData(res));
+    handleGetApi("/board", params).then((res) => {
+      setData(res);
+    });
   };
 
   return (
     <>
       <MenuBar />
       <div
-        onMouseMove={(e) => setMouse({ x: e.clientX, y: e.clientY })}
+        onMouseMove={(e) => {
+          setMouse({ x: e.clientX, y: e.clientY });
+        }}
         onClick={handlePost}
       >
         <Grid>
           {data.map((item: ItemData) => {
             return (
               <Element
-                key={item.x.toString() + item.y.toString() + Math.random()}
+                key={`${item.x}+${item.y}+${item.data.createdAt}`}
                 details={item}
               />
             );

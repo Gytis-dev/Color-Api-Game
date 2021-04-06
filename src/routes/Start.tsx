@@ -30,10 +30,6 @@ export const Start = (): JSX.Element => {
     setColor(e.currentTarget.getAttribute("color"));
   };
 
-  useEffect(() => {
-    removeItemsFromLocalStorage();
-  }, []);
-
   return (
     <Wrapper>
       <FormElement>

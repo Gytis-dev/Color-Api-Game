@@ -1,14 +1,13 @@
 import { Route, Redirect } from "react-router-dom";
 import { Dashboard } from "../routes/Dashboard";
 import { username } from "../consts/params";
-
-const currentUserCheck = () => {
-  if (username) return true;
-  else return false;
-};
+import { AppContext } from "../context/Context";
+import { useContext } from "react";
 
 export const PrivateRoute = ({ ...rest }: any): JSX.Element => {
-  if (currentUserCheck()) {
+  const context = useContext(AppContext);
+
+  if (context?.currentUser || username) {
     return <Route {...rest} path="/dashboard" component={Dashboard} />;
   } else {
     return <Redirect to="/" />;

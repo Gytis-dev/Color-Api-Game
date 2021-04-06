@@ -28,16 +28,14 @@ export const Context = ({
   };
   //Initial render
   useEffect(() => {
-    handleGetApi("/board", params)
-      .then((res) => setData(res))
-      .catch((e) => setError(e));
-  }, []);
-  // Handling localstorage and updating context state
-  useEffect(() => {
     if (username || colorName) {
       setUser(username);
       setColor(colorName);
     }
+
+    handleGetApi("/board", params)
+      .then((res) => setData(res))
+      .catch((e) => setError(e));
   }, []);
 
   const value = {
