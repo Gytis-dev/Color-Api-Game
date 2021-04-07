@@ -16,6 +16,7 @@ export const MenuBar = (): JSX.Element => {
   const context = useContext(AppContext);
   const user = context?.currentUser;
   const color = context?.color;
+  const scale = context?.scale;
 
   return (
     <MenuWrap>
@@ -32,6 +33,16 @@ export const MenuBar = (): JSX.Element => {
             Pick random color!
           </Random>
         </Color>
+      </UserWrap>
+      <UserWrap>
+        <input
+          onChange={(e) => context?.changeScale(parseInt(e.target.value))}
+          type="range"
+          min="1"
+          max="10"
+          value={scale}
+          step="1"
+        />
       </UserWrap>
     </MenuWrap>
   );
