@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState, useMemo } from "react";
 import { AppContext } from "../context/Context";
 import styled from "styled-components";
 import { Element } from "../components/Element";
-import { ItemData } from "../types/globalTypes";
 import { MenuBar } from "../components/MenuBar";
 import { handleGetApi, handlePostApi } from "../apis/config";
 import { params } from "../consts/params";
@@ -17,6 +16,17 @@ export const Dashboard = (): JSX.Element => {
 
   const context = useContext(AppContext);
   const [data, setData] = useState<any>([]);
+
+  const updateElement = useMemo(() => {
+    return data.map((item: any) => {
+      return (
+        <Element
+          key={`${item.x}+${item.y}+${item.data.createdAt}`}
+          details={item}
+        />
+      );
+    });
+  }, [data]);
 
   useEffect(() => {
     setData(context?.data);
@@ -56,16 +66,7 @@ export const Dashboard = (): JSX.Element => {
         }}
         onClick={handlePost}
       >
-        <Grid>
-          {data.map((item: ItemData) => {
-            return (
-              <Element
-                key={`${item.x}+${item.y}+${item.data.createdAt}`}
-                details={item}
-              />
-            );
-          })}
-        </Grid>
+        <Grid>{updateElement}</Grid>
       </div>
     </>
   );

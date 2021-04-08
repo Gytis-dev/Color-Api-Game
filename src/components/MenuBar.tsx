@@ -1,5 +1,5 @@
 import { AppContext } from "../context/Context";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { randomColorGenerator } from "../consts/params";
 import {
   Random,
@@ -16,6 +16,7 @@ export const MenuBar = (): JSX.Element => {
   const context = useContext(AppContext);
   const user = context?.currentUser;
   const color = context?.color;
+  const [button, setButton] = useState(false);
 
   return (
     <MenuWrap>
