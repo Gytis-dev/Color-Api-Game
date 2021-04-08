@@ -1,6 +1,6 @@
 export interface ItemData {
-  x: number | string;
-  y: number | string;
+  x: number;
+  y: number;
   data: {
     color: string;
     name: string;
@@ -15,12 +15,14 @@ export interface ContextInterface {
   data: Array<unknown> | null;
   color: string | null;
   changeUserColor: (color: string) => void;
+  scale: number;
+  changeScale: (scale: number) => void;
 }
 
 export interface DetailsInterface {
   details: {
-    x: number | string;
-    y: number | string;
+    x: number;
+    y: number;
     data: {
       name: string;
       color: string;

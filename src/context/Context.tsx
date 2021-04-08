@@ -16,6 +16,7 @@ export const Context = ({
   const [data, setData] = useState<Array<unknown>>([]);
   const [error, setError] = useState("");
   const [color, setColor] = useState<string | null>(null);
+  const [scale, setScale] = useState(3);
 
   // Context functions
   const getUserName = (name: string) => {
@@ -25,6 +26,9 @@ export const Context = ({
   const changeUserColor = (color: string) => {
     setColor(color);
     localStorage.setItem("color", color);
+  };
+  const changeScale = (scale: number) => {
+    setScale(scale);
   };
   //Initial render
   useEffect(() => {
@@ -45,6 +49,8 @@ export const Context = ({
     data: data,
     color: color,
     changeUserColor,
+    scale: scale,
+    changeScale,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
