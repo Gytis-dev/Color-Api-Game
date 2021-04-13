@@ -1,23 +1,36 @@
 import React, { createContext, useState, useEffect } from "react";
-import { handleGetApi } from "../apis/config";
-import { ContextInterface } from "../types/globalTypes";
-import { params } from "../consts/params";
 import { username, colorName } from "../consts/params";
+import { handleDataFetchThunk } from "../state/actions/actions";
+import { useDispatch, useSelector } from "react-redux";
 
-export const AppContext = createContext<ContextInterface | null | undefined>(
-  null
-);
+interface ContextInterface {
+  currentUser: string | null;
+  getUserName: (name: string) => void;
+  data: any;
+  color: string | null;
+  changeUserColor: (color: string) => void;
+  scale: number;
+  changeScale: (scale: number) => void;
+}
+
+export const AppContext = createContext<ContextInterface | null>(null);
 export const Context = ({
   children,
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
-  const [user, setUser] = useState<string | null>("");
-  const [data, setData] = useState<Array<unknown>>([]);
-  const [error, setError] = useState("");
+  const [user, setUser] = useState<string | null>(null);
   const [color, setColor] = useState<string | null>(null);
+  const [scale, setScale] = useState(1);
+  const [data, setData] = useState({
+    data: [],
+    loading: false,
+    error: "",
+  });
 
-  // Context functions
+  const dispatch = useDispatch();
+  const state = useSelector((state: any) => state);
+
   const getUserName = (name: string) => {
     setUser(name);
     localStorage.setItem("currentUser", name);
@@ -26,25 +39,30 @@ export const Context = ({
     setColor(color);
     localStorage.setItem("color", color);
   };
-  //Initial render
+  const changeScale = (scale: number) => {
+    setScale(scale);
+  };
+
   useEffect(() => {
     if (username || colorName) {
       setUser(username);
       setColor(colorName);
     }
-
-    handleGetApi("/board", params)
-      .then((res) => setData(res))
-      .catch((e) => setError(e));
+    dispatch(handleDataFetchThunk());
   }, []);
+
+  useEffect(() => {
+    setData(state);
+  }, [state]);
 
   const value = {
     currentUser: user,
-    fetchError: error,
-    getUserName,
     data: data,
+    getUserName,
     color: color,
     changeUserColor,
+    scale: scale,
+    changeScale,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

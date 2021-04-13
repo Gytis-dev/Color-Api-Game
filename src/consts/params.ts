@@ -1,8 +1,8 @@
 export const params = {
-  x: 220,
-  y: 10,
-  w: 400,
-  h: 400,
+  x: 0,
+  y: 0,
+  w: 1200,
+  h: 1200,
 };
 
 export const username = localStorage.getItem("currentUser");

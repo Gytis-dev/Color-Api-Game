@@ -14,22 +14,36 @@ export const UserWrap = styled.div`
 export const User = styled.div`
   margin: 5px;
   font-size: ${(props) => props.theme.fontSize.min};
-  color: white;
+  color: black;
+  background: ${(props) => props.theme.color.fifth};
+  padding: 7px;
+  font-weight: 600;
+  border-radius: 10px;
+  width: 100%;
 `;
 export const Color = styled.div`
-  display: inline-flex;
-  margin: 5px;
+  background: transparent;
   font-size: ${(props) => props.theme.fontSize.min};
+  height: 40px;
+  margin-top: 10px;
+  color: black;
+  font-weight: 600;
+  width: 100%;
+  padding-bottom: 20px;
 `;
 export const ColorCode = styled.div<{
   selectedColor: string | null | undefined;
 }>`
   background: ${(props) => props.selectedColor};
-  width: 15px;
-  height: 15px;
-  display: inline-flex;
-  margin-left: 3px;
+  width: 50%;
+  margin: 0 auto;
   border-radius: 20px;
+  height: 100%;
+  display: flex;
+  color: white;
+  letter-spacing: 1px;
+  justify-content: center;
+  align-items: center;
 `;
 export const MenuWrap = styled.div`
   background: ${(props) => props.theme.color.primary};
@@ -41,11 +55,12 @@ export const MenuWrap = styled.div`
 `;
 export const Title = styled.div`
   flex: 2;
-  font-weight: bold;
-  text-align: center;
+  font-weight: 600;
+  text-align: left;
   padding-top: 15px;
-  color: lightgrey;
-  font-size: ${(props) => props.theme.fontSize.mid};
+  color: white;
+  margin-left: 10px;
+  font-size: ${(props) => props.theme.fontSize.big};
 `;
 export const HeaderWrap = styled.div`
   display: flex;

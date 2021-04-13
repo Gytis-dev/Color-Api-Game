@@ -2,10 +2,11 @@ import styled from "styled-components";
 
 export const theme = {
   color: {
-    primary: "#313a46",
+    primary: "#007580",
     secondary: "#fafbfe",
     third: "#727cf5",
     fourth: "#0acf97",
+    fifth: "white",
   },
   fontSize: {
     min: "12px",
@@ -42,6 +43,9 @@ export const Input = styled.input`
   border: none;
   background: transparent;
   border-bottom: 1px solid ${(props) => props.theme.color.secondary};
+  &::placeholder {
+    color: white;
+  }
 `;
 export const Button = styled.button<{ primary?: boolean | null }>`
   width: 75%;
@@ -60,7 +64,7 @@ export const Button = styled.button<{ primary?: boolean | null }>`
   }
 `;
 export const Head = styled.div<{ size: string | null }>`
-  color: white;
+  color: ${(props) => props.theme.color.secondary};
   font-weight: bold;
   font-size: ${(props) =>
     props.size ? props.theme.fontSize[props.size] : "initial"};
@@ -71,8 +75,11 @@ export const Text = styled.p`
 `;
 
 export const ColorWrapper = styled.div`
-  margin: 5px;
+  margin: 5px auto;
   text-align: center;
+  padding: 10px;
+  color: black;
+  width: 75%;
 `;
 export const Color = styled.div`
   margin: 10px;
@@ -87,6 +94,7 @@ export const Span = styled.div<{ color: string }>`
   height: 100%;
   margin: 3px;
   border-radius: 5px;
+  transition: 0.3s ease-in-out;
   &:hover {
     border: 2px solid white;
     cursor: pointer;

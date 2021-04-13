@@ -1,6 +1,6 @@
 export interface ItemData {
-  x: number | string;
-  y: number | string;
+  x: number;
+  y: number;
   data: {
     color: string;
     name: string;
@@ -8,19 +8,11 @@ export interface ItemData {
   };
 }
 [];
-export interface ContextInterface {
-  currentUser: string | null;
-  getUserName: (name: string) => void;
-  fetchError: string | null;
-  data: Array<unknown> | null;
-  color: string | null;
-  changeUserColor: (color: string) => void;
-}
 
 export interface DetailsInterface {
   details: {
-    x: number | string;
-    y: number | string;
+    x: number;
+    y: number;
     data: {
       name: string;
       color: string;

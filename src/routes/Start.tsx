@@ -19,10 +19,12 @@ export const Start = (): JSX.Element => {
   const history = useHistory();
 
   const handleClick = () => {
-    context?.getUserName(name);
-    context?.changeUserColor(color);
-    setName("");
-    history.push("/dashboard");
+    if (name.length != 0) {
+      context?.getUserName(name);
+      context?.changeUserColor(color);
+      setName("");
+      history.push("/dashboard");
+    }
   };
 
   const handleColorChange = (e: React.MouseEvent<HTMLElement>) => {
