@@ -1,5 +1,12 @@
 import { createStore, applyMiddleware, compose } from "redux";
-import { colorReducer } from "../reducers/reducers";
+import { rootReducer } from "../reducers/rootReducer";
 import thunk from "redux-thunk";
 
-export const store = createStore(colorReducer, compose(applyMiddleware(thunk)));
+export const store: any = createStore(
+  rootReducer,
+  compose(
+    applyMiddleware(thunk),
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+      (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+  )
+);

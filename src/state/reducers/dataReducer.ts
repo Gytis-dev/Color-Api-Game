@@ -16,10 +16,14 @@ const colors = {
   error: null,
 };
 
-export const colorReducer = (state: StateInterface = colors, action: any) => {
+export const dataReducer = (state: StateInterface = colors, action: any) => {
   switch (action.type) {
     case FETCH_SUCCESS: {
-      return { data: action.payload, loading: false, error: null };
+      return {
+        data: action.payload,
+        loading: false,
+        error: null,
+      };
     }
     case FETCH_LOADING: {
       return { data: [], loading: true, error: null };

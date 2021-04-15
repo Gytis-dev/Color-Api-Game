@@ -1,13 +1,12 @@
 import { Route, Redirect } from "react-router-dom";
 import { Dashboard } from "../routes/Dashboard";
+import { useSelector } from "react-redux";
 import { username } from "../consts/params";
-import { AppContext } from "../context/Context";
-import { useContext } from "react";
 
 export const PrivateRoute = ({ ...rest }: any): JSX.Element => {
-  const context = useContext(AppContext);
+  const state = useSelector((state: any) => state.userReducer);
 
-  if (context?.currentUser || username) {
+  if (state.user.length != 0 || username) {
     return <Route {...rest} path="/dashboard" component={Dashboard} />;
   } else {
     return <Redirect to="/" />;

@@ -1,15 +1,22 @@
-import { AppContext } from "../context/Context";
 import styled from "styled-components";
-import { useContext, useState } from "react";
+import { useState, useEffect } from "react";
 import { Color, ColorCode } from "../styles/menuBarStyle";
+import { username, colorName } from "../consts/params";
+import { setUser, setColor } from "../state/actions/actions";
+import { useDispatch, useSelector } from "react-redux";
 
 export const MenuBar = (): JSX.Element => {
-  const context = useContext(AppContext);
-  const user = context?.currentUser;
-  const color = context?.color;
-  const scale = context?.scale;
-
   const [toggle, setToggle] = useState(true);
+  const dispatch = useDispatch();
+
+  const { user, color } = useSelector((state: any) => state.userReducer);
+
+  useEffect(() => {
+    if (username != null && colorName != null) {
+      dispatch(setUser(username));
+      dispatch(setColor(colorName));
+    }
+  }, []);
 
   return (
     <MenuBarWrap toggle={toggle}>
@@ -30,14 +37,14 @@ export const MenuBar = (): JSX.Element => {
 
       <ZoomWrap>
         <ZoomLabel>Zoom in!</ZoomLabel>
-        <input
+        {/* <input
           onChange={(e) => context?.changeScale(parseInt(e.target.value))}
           type="range"
           min="1"
           max="10"
           value={scale}
           step="1"
-        />
+        /> */}
       </ZoomWrap>
 
       <Color>

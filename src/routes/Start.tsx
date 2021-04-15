@@ -1,48 +1,41 @@
-import {
-  Wrapper,
-  FormElement,
-  Input,
-  Head,
-  ColorWrapper,
-  Color,
-  Span,
-  Button,
-} from "../styles/globalStyle";
-import React, { useContext, useState } from "react";
-import { AppContext } from "../context/Context";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
+import { setUser } from "../state/actions/actions";
+import { useDispatch } from "react-redux";
 
 export const Start = (): JSX.Element => {
-  const context = useContext(AppContext);
-  const [name, setName] = useState("");
-  const [color, setColor] = useState<any>("");
   const history = useHistory();
+  const dispatch = useDispatch();
 
-  const handleClick = () => {
-    if (name.length != 0) {
-      context?.getUserName(name);
-      context?.changeUserColor(color);
-      setName("");
+  const [error, setError] = useState<string>("");
+  const [color, setColor] = useState<string | null>("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const username = (e.currentTarget.children[2]
+      .children[0] as HTMLInputElement).value;
+    if (username.length != 0 && color?.length != 0) {
+      localStorage.setItem("currentUser", username);
+      if (color != null) localStorage.setItem("color", color);
+      dispatch(setUser(username));
+      setError("");
       history.push("/dashboard");
-    }
+    } else setError("Make sure you enter username and / or color");
   };
 
-  const handleColorChange = (e: React.MouseEvent<HTMLElement>) => {
+  const handleColorChange = (e: React.FormEvent) => {
     setColor(e.currentTarget.getAttribute("color"));
   };
 
   return (
-    <Wrapper>
+    <Wrapper onSubmit={handleSubmit}>
+      <ErrorMessage error={error}>{error}</ErrorMessage>
       <FormElement>
         <Head size={"mid"}>Get started</Head>
       </FormElement>
       <FormElement>
-        <Input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your name..."
-        />
+        <Input type="text" placeholder="Enter your username..." />
       </FormElement>
       <ColorWrapper>
         <Head size={"min"}>Pick initial color</Head>
@@ -55,8 +48,80 @@ export const Start = (): JSX.Element => {
         </Color>
       </ColorWrapper>
       <FormElement>
-        <Button onClick={handleClick}>Start</Button>
+        <input type="submit" value="Start" />
       </FormElement>
     </Wrapper>
   );
 };
+
+const ErrorMessage = styled.div<{ error: string }>`
+  text-align: center;
+  background: ${(props) =>
+    props.error ? props.theme.color.secondary : props.theme.color.primary};
+  };
+  border-radius: 5px;
+  padding: 5px;
+  transition: 0.3s;
+`;
+const Wrapper = styled.form`
+  position: absolute;
+  width: 400px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background: ${(props) => props.theme.color.primary};
+  box-shadow: 10px 10px 27px -9px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 10px 10px 27px -9px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 27px -9px rgba(0, 0, 0, 0.75);
+  border-radius: 5px;
+`;
+const FormElement = styled.div`
+  max-width: 75%;
+  margin: 10px auto;
+  height: 30px;
+  text-align: center;
+`;
+const Input = styled.input`
+  width: 100%;
+  height: 100%;
+  outline: none;
+  color: white;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid ${(props) => props.theme.color.secondary};
+  &::placeholder {
+    color: white;
+  }
+`;
+const Head = styled.div<{ size: string | null }>`
+  color: ${(props) => props.theme.color.secondary};
+  font-weight: bold;
+  font-size: ${(props) =>
+    props.size ? props.theme.fontSize[props.size] : "initial"};
+`;
+const ColorWrapper = styled.div`
+  margin: 5px auto;
+  text-align: center;
+  padding: 10px;
+  color: black;
+  width: 75%;
+`;
+const Color = styled.div`
+  margin: 10px;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+`;
+const Span = styled.div<{ color: string }>`
+  background: ${(props) => props.color};
+  width: 25px;
+  height: 100%;
+  margin: 3px;
+  border-radius: 5px;
+  transition: 0.3s ease-in-out;
+  &:hover {
+    border: 2px solid white;
+    cursor: pointer;
+  }
+`;
