@@ -1,122 +1,194 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
-import { Color, ColorCode } from "../styles/menuBarStyle";
-import { username, colorName } from "../consts/params";
+import React, { useState, useEffect } from "react";
+import { colorName, username, initialColors } from "../consts/params";
 import { setUser, setColor } from "../state/actions/actions";
+import { UserState } from "../types/globalTypes";
 import { useDispatch, useSelector } from "react-redux";
 
 export const MenuBar = (): JSX.Element => {
   const [toggle, setToggle] = useState(true);
   const dispatch = useDispatch();
 
-  const { user, color } = useSelector((state: any) => state.userReducer);
+  const { user, color } = useSelector((state: UserState) => state.userReducer);
+
+  const handleColorChange = (e: React.MouseEvent<HTMLDivElement>) => {
+    const attribute = e.currentTarget.getAttribute("color");
+    dispatch(setColor(attribute));
+    if (attribute != null) sessionStorage.setItem("color", attribute);
+  };
 
   useEffect(() => {
-    if (username != null && colorName != null) {
+    if (username != null && colorName != null && user.length === 0) {
       dispatch(setUser(username));
       dispatch(setColor(colorName));
     }
   }, []);
 
   return (
-    <MenuBarWrap toggle={toggle}>
-      <Head>
-        <Toggler onClick={() => setToggle(!toggle)}>
-          <Line></Line>
-          <Line></Line>
-          <Line></Line>
-        </Toggler>
-      </Head>
-
-      <UserWrapper>
-        <CurrentUser>
-          <Span>Painter: </Span>
-          {user}
-        </CurrentUser>
-      </UserWrapper>
-
-      <ZoomWrap>
-        <ZoomLabel>Zoom in!</ZoomLabel>
-        {/* <input
-          onChange={(e) => context?.changeScale(parseInt(e.target.value))}
-          type="range"
-          min="1"
-          max="10"
-          value={scale}
-          step="1"
-        /> */}
-      </ZoomWrap>
-
-      <Color>
-        <ColorCode selectedColor={color}>{color}</ColorCode>
-      </Color>
-    </MenuBarWrap>
+    <MenuWrap status={toggle}>
+      <Toggler status={toggle} onClick={() => setToggle(!toggle)}>
+        <Line></Line>
+        <Line></Line>
+        <Line></Line>
+      </Toggler>
+      <Content status={toggle}>
+        <Section>
+          <Title>Menu</Title>
+        </Section>
+        <Section>
+          <Logo>{user && user[0].toUpperCase()}</Logo>
+          <Email>{user}</Email>
+        </Section>
+        <Section>
+          <CurrentColor>
+            <Name>Current color</Name>
+            <Color color={color ? color : "#51c4d3"}>
+              {color ? color : "#51c4d3"}
+            </Color>
+          </CurrentColor>
+        </Section>
+        <Section>
+          <ColorSelection>
+            <Select
+              color={initialColors[0]}
+              onClick={handleColorChange}
+            ></Select>
+            <Select
+              color={initialColors[1]}
+              onClick={handleColorChange}
+            ></Select>
+            <Select
+              color={initialColors[2]}
+              onClick={handleColorChange}
+            ></Select>
+            <Select
+              color={initialColors[3]}
+              onClick={handleColorChange}
+            ></Select>
+            <Select
+              color={initialColors[4]}
+              onClick={handleColorChange}
+            ></Select>
+            <Select
+              color={initialColors[5]}
+              onClick={handleColorChange}
+            ></Select>
+            <Select
+              color={initialColors[6]}
+              onClick={handleColorChange}
+            ></Select>
+            <Select
+              color={initialColors[7]}
+              onClick={handleColorChange}
+            ></Select>
+            <Select
+              color={initialColors[8]}
+              onClick={handleColorChange}
+            ></Select>
+          </ColorSelection>
+        </Section>
+      </Content>
+    </MenuWrap>
   );
 };
 
-const MenuBarWrap = styled.div<{ toggle: boolean }>`
-  background: ${(props) => props.theme.color.primary};
-  width: ${(props) => (props.toggle ? "70px" : "225px")};
-  height: ${(props) => (props.toggle ? "60px" : "400px")};
+interface ToggleStatus {
+  status: boolean;
+}
+const MenuWrap = styled.div<ToggleStatus>`
   position: absolute;
-  z-index: 10;
-  overflow: hidden;
-  transition: 0.2s ease-in;
-  border-radius: 0px 0px 10px 0px;
-
-  @media screen and (max-width: 400px) {
-    position: fixed;
-    width: ${(props) => (props.toggle ? "100vw" : "70px")};
-    height: ${(props) => (props.toggle ? "auto" : "60px")};
-    z-index: 1;
-    transition: 0.2s;
-  }
+  z-index: 1;
+  width: ${({ status }) => (status ? "250px" : "-250px")};
+  height: 100vh;
+  background: ${(props) => props.theme.color.primary};
 `;
-const Head = styled.div`
+const Content = styled.div<ToggleStatus>`
+  display: ${({ status }) => (status ? "intial" : "none")};
+`;
+const Section = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+const Toggler = styled.div<ToggleStatus>`
+  background: ${(props) => props.theme.color.primary};
+  text-align: right;
   height: 40px;
-  margin: 8px;
-`;
-
-const Toggler = styled.div`
   padding: 6px;
-  width: 50px;
-  height: 100%;
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  align-items: center;
-  &:hover {
-    cursor: pointer;
+  transition: 0.3s ease-in-out;
+  width: 60px;
+  left: ${({ status }) => (status ? "250px" : "0px")};
+  border-radius: ${(props) => (props.status ? "0px" : "5px")};
+  margin: ${({ status }) => (status ? "0px" : "10px")};
+  cursor: pointer;
+  &:hover > div {
+    background: lightgrey;
+    transition: 0.2s;
   }
 `;
 const Line = styled.div`
-  width: 50px;
+  width: 100%;
   border-radius: 2px;
   height: 5px;
-  background: ${(props) => props.theme.color.secondary};
+  background: white;
 `;
-const UserWrapper = styled.div`
-  background: ${(props) => props.theme.color.secondary};
+const Title = styled.div`
   padding: 10px;
-  margin: 12px auto;
-  border-radius: 10px;
-  width: 75%;
+  font-size: ${(props) => props.theme.fontSize.big};
+  color: ${(props) => props.theme.color.secondary};
 `;
-const CurrentUser = styled.div`
-  font-size: ${(props) => props.theme.fontSize.small};
+const Logo = styled.div`
+  align-self: center;
+  background: ${(props) => props.theme.color.secondary};
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
 `;
-const Span = styled.small`
-  font-weight: 600;
+const Email = styled.div`
+  align-self: center;
+  padding: 10px;
+  font-size: ${(props) => props.theme.fontSize.min};
+  color: white;
 `;
-
-const ZoomWrap = styled.div`
+const CurrentColor = styled.div`
+  font-size: ${(props) => props.theme.fontSize.min};
+  color: black;
+  background: ${(props) => props.theme.color.secondary};
+  padding: 15px;
+  margin: 10px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: space-around;
+`;
+const Name = styled.div``;
+const Color = styled.div<{ color: string }>`
+  background: ${({ color }) => color};
+  padding: 0px 15px;
+  color: white;
+  border-radius: 3px;
+`;
+const ColorSelection = styled.div`
+  background: ${(props) => props.theme.color.secondary};
+  margin: 10px;
   padding: 10px;
+  font-size: ${(props) => props.theme.fontSize.min};
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 5px;
 `;
-const ZoomLabel = styled.div`
-  color: ${(props) => props.theme.color.secondary};
-  letter-spacing: 1px;
+const Select = styled.div<{ color: string }>`
+  background: ${({ color }) => color};
+  border: 2px solid white;
+  text-align: center;
+  padding: 15px;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  &:hover {
+    border: 2px solid grey;
+  }
 `;

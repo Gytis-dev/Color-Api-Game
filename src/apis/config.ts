@@ -31,3 +31,17 @@ export const handlePostApi = async (postObject: unknown): Promise<unknown> => {
     data: postObject,
   });
 };
+
+export const boardStatus = async (): Promise<{
+  maxX: number;
+  maxY: number;
+  minX: number;
+  minY: number;
+  update: number;
+}> => {
+  const promise = await axios({
+    method: "GET",
+    url: BASE_URL + "/board" + "/status",
+  });
+  return await promise.data[0];
+};

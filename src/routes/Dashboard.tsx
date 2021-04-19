@@ -1,17 +1,19 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Element } from "../components/Element";
-import { ItemData } from "../types/globalTypes";
+import { ItemData, Data, UserState } from "../types/globalTypes";
 import { MenuBar } from "../components/MenuBar";
-import { handlePostApi } from "../apis/config";
+import { handlePostApi, boardStatus, handleGetApi } from "../apis/config";
 import { Loader } from "../components/Loader";
 import { useSelector, useDispatch } from "react-redux";
-import { handleDataFetchThunk } from "../state/actions/actions";
+import { fetchSuccess, handleDataFetchThunk } from "../state/actions/actions";
 import { Stage, Layer } from "react-konva";
-import { username, colorName } from "../consts/params";
+import { params } from "../consts/params";
 
 export const Dashboard = (): JSX.Element => {
-  const { data, loading } = useSelector((state: any) => state.dataReducer);
+  const { data, loading } = useSelector((state: Data) => state.dataReducer);
+  const { color, user } = useSelector((state: UserState) => state.userReducer);
+  let counter = 0;
 
   const dispatch = useDispatch();
 
@@ -22,13 +24,27 @@ export const Dashboard = (): JSX.Element => {
     await handlePostApi({
       x: coordinateX,
       y: coordinateY,
-      name: username,
-      color: colorName,
+      name: user,
+      color: color,
     });
   };
 
   useEffect(() => {
     dispatch(handleDataFetchThunk());
+
+    setTimeout(function updateBoard() {
+      boardStatus().then((res) => {
+        const boardStatus = res.update;
+
+        if (boardStatus > counter) {
+          counter = boardStatus;
+          handleGetApi("/board", params).then((res) => {
+            dispatch(fetchSuccess(res));
+          });
+        }
+      });
+      setTimeout(updateBoard, 1000);
+    }, 1000);
   }, []);
 
   return (
@@ -47,12 +63,7 @@ export const Dashboard = (): JSX.Element => {
                     x: item.x,
                     y: item.y,
                   };
-                  return (
-                    <Element
-                      key={`${item.x}+${item.y}+${item.data.createdAt}`}
-                      details={scaledItem}
-                    />
-                  );
+                  return <Element key={item._id} details={scaledItem} />;
                 })}
               </Layer>
             </Stage>

@@ -1,10 +1,8 @@
-import styled from "styled-components";
-
 export const theme = {
   color: {
-    primary: "#007580",
-    secondary: "#fafbfe",
-    third: "#727cf5",
+    primary: "#516395",
+    secondary: "white",
+    third: "#ce1f6a",
     fourth: "#0acf97",
     fifth: "white",
   },

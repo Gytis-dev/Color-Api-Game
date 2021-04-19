@@ -31,7 +31,7 @@ export const setUser = (user: string) => {
     payload: user,
   };
 };
-export const setColor = (color: string) => {
+export const setColor = (color: string | null) => {
   return {
     type: SET_COLOR,
     payload: color,

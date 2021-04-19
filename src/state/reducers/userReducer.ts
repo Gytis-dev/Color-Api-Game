@@ -1,12 +1,8 @@
 import { SET_USER, SET_COLOR } from "../actions/actionTypes";
 
-interface User<T> {
-  [key: string]: T;
-}
-
-const userState: User<number | string | boolean | null> = {
+const initialState = {
   user: "",
-  color: "",
+  color: "red",
 };
 
 interface Action {
@@ -14,7 +10,7 @@ interface Action {
   payload: string;
 }
 
-export const userReducer = (state = userState, action: Action) => {
+export const userReducer = (state = initialState, action: Action) => {
   switch (action.type) {
     case SET_USER: {
       return {

@@ -10,13 +10,13 @@ interface StateInterface {
   error: string | null;
 }
 
-const colors = {
+const initialState: StateInterface = {
   data: [],
   loading: false,
   error: null,
 };
 
-export const dataReducer = (state: StateInterface = colors, action: any) => {
+export const dataReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case FETCH_SUCCESS: {
       return {
