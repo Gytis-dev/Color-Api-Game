@@ -2,7 +2,7 @@ import { SET_USER, SET_COLOR } from "../actions/actionTypes";
 
 const initialState = {
   user: "",
-  color: "red",
+  color: "#51c4d3",
 };
 
 interface Action {

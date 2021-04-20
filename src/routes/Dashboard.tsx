@@ -6,9 +6,14 @@ import { MenuBar } from "../components/MenuBar";
 import { handlePostApi, boardStatus, handleGetApi } from "../apis/config";
 import { Loader } from "../components/Loader";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSuccess, handleDataFetchThunk } from "../state/actions/actions";
+import {
+  fetchSuccess,
+  handleDataFetchThunk,
+  setUser,
+} from "../state/actions/actions";
 import { Stage, Layer } from "react-konva";
 import { params } from "../consts/params";
+import { auth } from "../config/firebase";
 
 export const Dashboard = (): JSX.Element => {
   const { data, loading } = useSelector((state: Data) => state.dataReducer);
@@ -31,6 +36,11 @@ export const Dashboard = (): JSX.Element => {
 
   useEffect(() => {
     dispatch(handleDataFetchThunk());
+
+    auth.onAuthStateChanged((user) => {
+      console.log(auth.currentUser);
+      dispatch(setUser(user?.email));
+    });
 
     setTimeout(function updateBoard() {
       boardStatus().then((res) => {

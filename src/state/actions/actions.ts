@@ -25,7 +25,7 @@ export const fetchError = (error: string | null) => {
     payload: error,
   };
 };
-export const setUser = (user: string) => {
+export const setUser = (user: any) => {
   return {
     type: SET_USER,
     payload: user,

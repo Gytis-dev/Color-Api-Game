@@ -1,12 +1,15 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { colorName, username, initialColors } from "../consts/params";
 import { setUser, setColor } from "../state/actions/actions";
 import { UserState } from "../types/globalTypes";
 import { useDispatch, useSelector } from "react-redux";
+import { auth } from "../config/firebase";
 
 export const MenuBar = (): JSX.Element => {
   const [toggle, setToggle] = useState(true);
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const { user, color } = useSelector((state: UserState) => state.userReducer);
@@ -17,11 +20,20 @@ export const MenuBar = (): JSX.Element => {
     if (attribute != null) sessionStorage.setItem("color", attribute);
   };
 
+  const handleLogOut = () => {
+    auth.signOut().then((res) => {
+      sessionStorage.removeItem("currentUser");
+      history.push("/");
+    });
+  };
+
   useEffect(() => {
     if (username != null && colorName != null && user.length === 0) {
-      dispatch(setUser(username));
       dispatch(setColor(colorName));
     }
+    auth.onAuthStateChanged((user) => {
+      dispatch(setUser(user?.email));
+    });
   }, []);
 
   return (
@@ -36,7 +48,7 @@ export const MenuBar = (): JSX.Element => {
           <Title>Menu</Title>
         </Section>
         <Section>
-          <Logo>{user && user[0].toUpperCase()}</Logo>
+          <Logo>{user ? user[0].toUpperCase() : "loading..."}</Logo>
           <Email>{user}</Email>
         </Section>
         <Section>
@@ -86,6 +98,9 @@ export const MenuBar = (): JSX.Element => {
               onClick={handleColorChange}
             ></Select>
           </ColorSelection>
+        </Section>
+        <Section>
+          <button onClick={handleLogOut}>Log out</button>
         </Section>
       </Content>
     </MenuWrap>

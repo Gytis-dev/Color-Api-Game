@@ -5,6 +5,7 @@ import { checkEmailValidity } from "../consts/functions";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../state/actions/actions";
+import { auth } from "../config/firebase";
 import {
   Form,
   FormContainer,
@@ -39,11 +40,15 @@ export const Login = (): JSX.Element => {
       password != undefined &&
       password.length != 0
     ) {
-      setError("");
-      dispatch(setUser(email));
-      sessionStorage.setItem("currentUser", email);
-      sessionStorage.setItem("color", "#51c4d3");
-      history.push("/dashboard");
+      auth
+        .signInWithEmailAndPassword(email, password)
+        .then((res) => {
+          dispatch(setUser(res.user?.email));
+          sessionStorage.setItem("currentUser", email);
+          sessionStorage.setItem("color", "#51c4d3");
+          history.push("/dashboard");
+        })
+        .catch((e) => console.log(e));
     } else setError("Username or password is incorrect");
   };
 
