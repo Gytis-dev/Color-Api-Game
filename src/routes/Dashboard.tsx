@@ -1,23 +1,27 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { Element } from "../components/Element";
 import { ItemData, Data, UserState } from "../types/globalTypes";
-import { MenuBar } from "../components/MenuBar";
+import { MenuBar, Element, Loader } from "../components/index";
 import { handlePostApi, boardStatus, handleGetApi } from "../apis/config";
-import { Loader } from "../components/Loader";
 import { useSelector, useDispatch } from "react-redux";
+import { Lines } from "../components/Lines";
 import {
   fetchSuccess,
   handleDataFetchThunk,
   setUser,
+  setLineHistory,
+  getLineHistory,
 } from "../state/actions/actions";
 import { Stage, Layer } from "react-konva";
-import { params } from "../consts/params";
+import { params } from "../consts/index";
 import { auth } from "../config/firebase";
 
 export const Dashboard = (): JSX.Element => {
   const { data, loading } = useSelector((state: Data) => state.dataReducer);
-  const { color, user } = useSelector((state: UserState) => state.userReducer);
+  const { color, user, lineHistory } = useSelector(
+    (state: UserState) => state.userReducer
+  );
+
   let counter = 0;
 
   const dispatch = useDispatch();
@@ -32,14 +36,24 @@ export const Dashboard = (): JSX.Element => {
       name: user,
       color: color,
     });
+    dispatch(setLineHistory({ coordinateX, coordinateY }));
+    sessionStorage.setItem("lineHistory", JSON.stringify(lineHistory));
   };
 
   useEffect(() => {
     dispatch(handleDataFetchThunk());
 
     auth.onAuthStateChanged((user) => {
-      console.log(auth.currentUser);
-      dispatch(setUser(user?.email));
+      if (user != null) {
+        const email = user.email;
+        const uuid = user.uid;
+
+        const userObject = {
+          user: email,
+          uuid: uuid,
+        };
+        dispatch(setUser(userObject));
+      }
     });
 
     setTimeout(function updateBoard() {
@@ -55,6 +69,12 @@ export const Dashboard = (): JSX.Element => {
       });
       setTimeout(updateBoard, 1000);
     }, 1000);
+
+    let lines = sessionStorage.getItem("lineHistory");
+    if (lines != null) {
+      lines = JSON.parse(lines);
+      dispatch(getLineHistory(lines));
+    }
   }, []);
 
   return (
@@ -75,6 +95,7 @@ export const Dashboard = (): JSX.Element => {
                   };
                   return <Element key={item._id} details={scaledItem} />;
                 })}
+                <Lines linePoints={lineHistory} color={color} />
               </Layer>
             </Stage>
           )}
@@ -85,7 +106,8 @@ export const Dashboard = (): JSX.Element => {
 };
 
 const Grid = styled.div`
-  background: ${(props) => props.theme.color.secondary};
+  background-image: url("https://images.unsplash.com/photo-1584531979583-18c5c4b25efc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80");
+  background-position: cover;
   width: 100%;
   height: 100vh;
   position: relative;

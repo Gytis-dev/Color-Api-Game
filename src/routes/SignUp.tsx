@@ -1,8 +1,8 @@
-import React, { FormEvent, useRef, useEffect } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faKey } from "@fortawesome/free-solid-svg-icons";
-import { auth } from "../config/firebase";
+import { auth, Database } from "../config/firebase";
 import {
   Form,
   FormContainer,
@@ -13,6 +13,7 @@ import {
   Back,
   RightContainer,
   FormControl,
+  Error,
   Input,
   MainWrap,
   SignUpTitle,
@@ -23,10 +24,12 @@ export const SignUp = (): JSX.Element => {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const repeatPasswordRef = useRef<HTMLInputElement | null>(null);
+  const [error, setError] = useState("");
   const history = useHistory();
 
   const handleFormSubmit = (e: FormEvent) => {
     e.preventDefault();
+
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
     const repeatPassword = repeatPasswordRef.current?.value;
@@ -45,19 +48,20 @@ export const SignUp = (): JSX.Element => {
         auth
           .createUserWithEmailAndPassword(email, password)
           .then((res) => {
-            console.log(res);
+            const uuid = res.user?.uid;
+            if (uuid) Database.createUserDocument(uuid);
             history.push("/");
           })
           .catch((e) => {
             console.log(e);
           });
+      } else {
+        setError(
+          "Please check your email or password (password should cointaint at least 6 characters)"
+        );
       }
     }
   };
-
-  useEffect(() => {
-    // console.log(auth.currentUser);
-  }, []);
 
   return (
     <MainWrap>
@@ -73,6 +77,9 @@ export const SignUp = (): JSX.Element => {
           </MoreInformation>
         </LeftContainer>
         <RightContainer>
+          <FormControl>
+            <Error>{error}</Error>
+          </FormControl>
           <SignUpTitle>Sign Up</SignUpTitle>
           <Form onSubmit={handleFormSubmit}>
             <FormControl>
@@ -91,13 +98,14 @@ export const SignUp = (): JSX.Element => {
                 placeholder="Password..."
                 ref={passwordRef}
                 required
+                name="email"
               />
             </FormControl>
             <FormControl>
               <FontAwesomeIcon icon={faKey} />
               <Input
                 type="password"
-                placeholder="Repeat password"
+                placeholder="Repeat password..."
                 ref={repeatPasswordRef}
                 required
               />

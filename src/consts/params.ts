@@ -13,19 +13,15 @@ export const removeItemsFromLocalStorage = (): void => {
   localStorage.removeItem("color");
 };
 
-export const randomColorGenerator = (): string => {
-  return "#" + (((1 << 24) * Math.random()) | 0).toString(16);
-};
-
 export const initialColors = [
-  "#325288",
-  "#96bb7c",
-  "#f0e3ca",
+  "#aa2ee6",
+  "#f21170",
+  "#8ab6d6",
   "#51c4d3",
-  "#ff8882",
-  "#d2e69c",
-  "#d44000",
-  "#98ddca",
-  "#536162",
+  "#8fd9a8",
+  "#ffe268",
+  "#fb743e",
+  "#e4bad4",
+  "#c2b092",
   "#fed049",
 ];

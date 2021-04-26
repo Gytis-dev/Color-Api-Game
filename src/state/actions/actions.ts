@@ -1,46 +1,55 @@
-import {
-  FETCH_SUCCESS,
-  FETCH_LOADING,
-  FETCH_ERROR,
-  SET_USER,
-  SET_COLOR,
-} from "../actions/actionTypes";
-import { params } from "../../consts/params";
+import { ATypes } from "../actions/actionTypes";
+import { ApiRoutes, UserType } from "../../types/globalTypes";
+import { params } from "../../consts/index";
 import { handleGetApi } from "../../apis/config";
 
 export const fetchSuccess = (data: Array<unknown>) => {
   return {
-    type: FETCH_SUCCESS,
+    type: ATypes.FETCH_SUCCESS,
     payload: data,
   };
 };
 export const FetchLoading = () => {
   return {
-    type: FETCH_LOADING,
+    type: ATypes.FETCH_LOADING,
   };
 };
 export const fetchError = (error: string | null) => {
   return {
-    type: FETCH_ERROR,
+    type: ATypes.FETCH_ERROR,
     payload: error,
   };
 };
-export const setUser = (user: any) => {
+export const setUser = (user: UserType) => {
   return {
-    type: SET_USER,
+    type: ATypes.SET_USER,
     payload: user,
   };
 };
 export const setColor = (color: string | null) => {
   return {
-    type: SET_COLOR,
+    type: ATypes.SET_COLOR,
     payload: color,
   };
 };
+export const setTheme = () => {
+  return {
+    type: ATypes.SET_THEME,
+  };
+};
+export const setLineHistory = (line: {
+  coordinateX: number;
+  coordinateY: number;
+}) => {
+  return { type: ATypes.SET_LINE, payload: line };
+};
 
+export const getLineHistory = (arr: any) => {
+  return { type: ATypes.GET_LINES, payload: arr };
+};
 export const handleDataFetchThunk = () => (dispatch: any) => {
   dispatch(FetchLoading());
-  handleGetApi("/board", params)
+  handleGetApi(ApiRoutes.board, params)
     .then((res) => {
       dispatch(fetchSuccess(res));
     })

@@ -1,67 +1,55 @@
 import styled from "styled-components";
 
-export const Random = styled.small`
-  margin-left: 5px;
-  color: ${(props) => props.theme.color.fourth};
-  &:hover {
-    color: white;
-    cursor: pointer;
-  }
-`;
-export const UserWrap = styled.div`
-  padding: 15px;
-`;
-export const User = styled.div`
-  margin: 5px;
-  font-size: ${(props) => props.theme.fontSize.min};
-  color: black;
-  background: ${(props) => props.theme.color.fifth};
-  padding: 7px;
-  font-weight: 600;
-  border-radius: 10px;
+export interface ToggleStatus {
+  status: boolean;
+  userTheme?: boolean;
+}
+export const ThemeText = styled.div``;
+
+export const Line = styled.div`
   width: 100%;
-`;
-export const Color = styled.div`
-  background: transparent;
-  font-size: ${(props) => props.theme.fontSize.min};
-  height: 40px;
-  margin-top: 10px;
-  color: black;
-  font-weight: 600;
-  width: 100%;
-  padding-bottom: 20px;
-`;
-export const ColorCode = styled.div<{
-  selectedColor: string | null | undefined;
-}>`
-  background: ${(props) => props.selectedColor};
-  width: 50%;
-  margin: 0 auto;
-  border-radius: 20px;
-  height: 100%;
-  display: flex;
-  color: white;
-  letter-spacing: 1px;
-  justify-content: center;
-  align-items: center;
-`;
-export const MenuWrap = styled.div`
-  background: ${(props) => props.theme.color.primary};
-  color: ${(props) => props.theme.color.secondary};
-  width: 215px;
-  position: absolute;
-  z-index: 1;
-  height: 100vh;
+  border-radius: 2px;
+  height: 5px;
+  background: white;
 `;
 export const Title = styled.div`
-  flex: 2;
-  font-weight: 600;
-  text-align: left;
-  padding-top: 15px;
-  color: white;
-  margin-left: 10px;
+  padding: 10px;
   font-size: ${(props) => props.theme.fontSize.big};
+  color: ${(props) => props.theme.color.secondary};
 `;
-export const HeaderWrap = styled.div`
+export const Logo = styled.div`
+  align-self: center;
+  background: ${(props) => props.theme.color.secondary};
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+`;
+export const Email = styled.div`
+  align-self: center;
+  padding: 10px;
+  font-size: ${(props) => props.theme.fontSize.min};
+  color: white;
+`;
+export const Section = styled.div`
+  width: 100%;
   display: flex;
+  flex-direction: column;
 `;
+export const LogoutWrap = styled.div`
+  padding: 10px;
+  text-align: center;
+`;
+
+export const LogoutButton = styled.button`
+  padding: 5px 25px;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  &:hover {
+    background: ${(props) => props.theme.color.secondary};
+    color: black;
+  }
+`;
+export const Name = styled.div``;

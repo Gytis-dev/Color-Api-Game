@@ -1,7 +1,7 @@
 import React, { FormEvent, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faKey } from "@fortawesome/free-solid-svg-icons";
-import { checkEmailValidity } from "../consts/functions";
+import { checkEmailValidity } from "../consts/index";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../state/actions/actions";
@@ -43,12 +43,21 @@ export const Login = (): JSX.Element => {
       auth
         .signInWithEmailAndPassword(email, password)
         .then((res) => {
-          dispatch(setUser(res.user?.email));
-          sessionStorage.setItem("currentUser", email);
-          sessionStorage.setItem("color", "#51c4d3");
-          history.push("/dashboard");
+          const uuid = res.user?.uid;
+          const eml = res.user?.email;
+
+          if (uuid != undefined && eml != undefined) {
+            const user = {
+              user: eml,
+              uuid: uuid,
+            };
+            dispatch(setUser(user));
+            sessionStorage.setItem("currentUser", email);
+            sessionStorage.setItem("color", "#51c4d3");
+            history.push("/dashboard");
+          }
         })
-        .catch((e) => console.log(e));
+        .catch((e) => setError(e.code));
     } else setError("Username or password is incorrect");
   };
 
@@ -80,7 +89,6 @@ export const Login = (): JSX.Element => {
               ref={passwordRef}
             />
           </FormControl>
-
           <FormControl>
             <Btn type="submit" value="Log in" />
           </FormControl>

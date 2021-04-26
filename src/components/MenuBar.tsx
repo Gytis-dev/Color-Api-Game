@@ -1,18 +1,33 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { colorName, username, initialColors } from "../consts/params";
-import { setUser, setColor } from "../state/actions/actions";
+import { colorName, username, initialColors } from "../consts/index";
+import { setColor, setTheme } from "../state/actions/actions";
 import { UserState } from "../types/globalTypes";
 import { useDispatch, useSelector } from "react-redux";
-import { auth } from "../config/firebase";
+import { auth, Database } from "../config/firebase";
+import {
+  ToggleStatus,
+  ThemeText,
+  Line,
+  Title,
+  Logo,
+  Email,
+  Section,
+  LogoutWrap,
+  LogoutButton,
+  Name,
+} from "../styles/menuBarStyle";
 
 export const MenuBar = (): JSX.Element => {
   const [toggle, setToggle] = useState(true);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [themeToggler, setThemeToggler] = useState(false);
 
-  const { user, color } = useSelector((state: UserState) => state.userReducer);
+  const { user, color, uuid, theme } = useSelector(
+    (state: UserState) => state.userReducer
+  );
 
   const handleColorChange = (e: React.MouseEvent<HTMLDivElement>) => {
     const attribute = e.currentTarget.getAttribute("color");
@@ -21,24 +36,47 @@ export const MenuBar = (): JSX.Element => {
   };
 
   const handleLogOut = () => {
-    auth.signOut().then((res) => {
+    auth.signOut().then(() => {
       sessionStorage.removeItem("currentUser");
+      sessionStorage.removeItem("lineHistory");
+      sessionStorage.removeItem("color");
       history.push("/");
     });
   };
 
+  const handleThemeChange = () => {
+    setThemeToggler(!themeToggler);
+    if (uuid) {
+      try {
+        Database.getUserDocument(uuid).then((doc) => {
+          if (doc.exists) {
+            Database.database
+              .doc(uuid)
+              .update({ darkTheme: !doc.data()?.darkTheme });
+            dispatch(setTheme());
+          } else {
+            console.log("Document not found");
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
   useEffect(() => {
-    if (username != null && colorName != null && user.length === 0) {
+    if (username != null && colorName != null && user === null) {
       dispatch(setColor(colorName));
     }
-    auth.onAuthStateChanged((user) => {
-      dispatch(setUser(user?.email));
-    });
   }, []);
 
   return (
-    <MenuWrap status={toggle}>
-      <Toggler status={toggle} onClick={() => setToggle(!toggle)}>
+    <MenuWrap status={toggle} userTheme={theme}>
+      <Toggler
+        status={toggle}
+        userTheme={theme}
+        onClick={() => setToggle(!toggle)}
+      >
         <Line></Line>
         <Line></Line>
         <Line></Line>
@@ -48,11 +86,11 @@ export const MenuBar = (): JSX.Element => {
           <Title>Menu</Title>
         </Section>
         <Section>
-          <Logo>{user ? user[0].toUpperCase() : "loading..."}</Logo>
-          <Email>{user}</Email>
+          <Logo>{user ? user[0].toUpperCase() : "Loading.."}</Logo>
+          <Email>{user && user}</Email>
         </Section>
         <Section>
-          <CurrentColor>
+          <CurrentColor toggler={themeToggler}>
             <Name>Current color</Name>
             <Color color={color ? color : "#51c4d3"}>
               {color ? color : "#51c4d3"}
@@ -60,7 +98,7 @@ export const MenuBar = (): JSX.Element => {
           </CurrentColor>
         </Section>
         <Section>
-          <ColorSelection>
+          <ColorSelection toggler={themeToggler}>
             <Select
               color={initialColors[0]}
               onClick={handleColorChange}
@@ -98,43 +136,78 @@ export const MenuBar = (): JSX.Element => {
               onClick={handleColorChange}
             ></Select>
           </ColorSelection>
+
+          <ThemeWrapper toggler={themeToggler}>
+            <ThemeText>{themeToggler ? "Dark mode" : "Light mode"}</ThemeText>
+            <ThemeToggler toggler={themeToggler}>
+              <Btn onClick={handleThemeChange} toggler={themeToggler}></Btn>
+            </ThemeToggler>
+          </ThemeWrapper>
         </Section>
-        <Section>
-          <button onClick={handleLogOut}>Log out</button>
-        </Section>
+
+        <LogoutWrap>
+          <LogoutButton onClick={handleLogOut}>Log out</LogoutButton>
+        </LogoutWrap>
       </Content>
     </MenuWrap>
   );
 };
 
-interface ToggleStatus {
-  status: boolean;
-}
+const ThemeToggler = styled.div<{ toggler: boolean }>`
+  background: ${(props) => (props.toggler ? "lightgreen" : "lightgrey")};
+  width: 70px;
+  height: 27px;
+  border-radius: 15px;
+  margin: 10px auto;
+  display: flex;
+  align-items: center;
+`;
+const Btn = styled.div<{ toggler: boolean }>`
+  width: 27px;
+  background: white;
+  border-radius: 15px;
+  cursor: pointer;
+  height: 92%;
+  transform: ${({ toggler }) =>
+    toggler ? "translateX(41px)" : "translateX(2px)"};
+  transition: 0.5s ease-in-out;
+`;
+const ThemeWrapper = styled.div<{ toggler: boolean }>`
+  background: ${(props) =>
+    props.toggler ? "black" : props.theme.color.secondary};
+  display: flex;
+  justify-content: space-around;
+  margin: 10px;
+  color: ${(props) => (props.toggler ? "white" : "black")};
+  font-size: ${(props) => props.theme.fontSize.min};
+  padding: 5px 20px;
+  transition: 0.5s ease-in-out;
+  align-items: center;
+`;
 const MenuWrap = styled.div<ToggleStatus>`
   position: absolute;
   z-index: 1;
   width: ${({ status }) => (status ? "250px" : "-250px")};
   height: 100vh;
-  background: ${(props) => props.theme.color.primary};
+  transition: 0.5s ease-in-out;
+  background: ${(props) =>
+    props.userTheme ? "black" : props.theme.color.primary};
 `;
 const Content = styled.div<ToggleStatus>`
   display: ${({ status }) => (status ? "intial" : "none")};
 `;
-const Section = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
 const Toggler = styled.div<ToggleStatus>`
-  background: ${(props) => props.theme.color.primary};
+  background: ${(props) =>
+    props.userTheme ? "black" : props.theme.color.primary};
   text-align: right;
   height: 40px;
+  transition: 0.3s;
   padding: 6px;
   position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  transition: 0.3s ease-in-out;
+  transition: 0.5s ease-in-out;
   width: 60px;
   left: ${({ status }) => (status ? "250px" : "0px")};
   border-radius: ${(props) => (props.status ? "0px" : "5px")};
@@ -142,58 +215,36 @@ const Toggler = styled.div<ToggleStatus>`
   cursor: pointer;
   &:hover > div {
     background: lightgrey;
-    transition: 0.2s;
+    transition: 0.1s;
   }
 `;
-const Line = styled.div`
-  width: 100%;
-  border-radius: 2px;
-  height: 5px;
-  background: white;
-`;
-const Title = styled.div`
-  padding: 10px;
-  font-size: ${(props) => props.theme.fontSize.big};
-  color: ${(props) => props.theme.color.secondary};
-`;
-const Logo = styled.div`
-  align-self: center;
-  background: ${(props) => props.theme.color.secondary};
-  padding: 10px 20px;
-  font-weight: bold;
-  border-radius: 30px;
-  cursor: pointer;
-`;
-const Email = styled.div`
-  align-self: center;
-  padding: 10px;
+const CurrentColor = styled.div<{ toggler: boolean }>`
   font-size: ${(props) => props.theme.fontSize.min};
-  color: white;
-`;
-const CurrentColor = styled.div`
-  font-size: ${(props) => props.theme.fontSize.min};
-  color: black;
-  background: ${(props) => props.theme.color.secondary};
+  color: ${(props) => (props.toggler ? "white" : "black")};
+  background: ${(props) =>
+    props.toggler ? "black" : props.theme.color.secondary};
   padding: 15px;
   margin: 10px;
   display: flex;
+  transition: 0.5s ease-in-out;
   justify-content: space-around;
 `;
-const Name = styled.div``;
 const Color = styled.div<{ color: string }>`
   background: ${({ color }) => color};
   padding: 0px 15px;
   color: white;
   border-radius: 3px;
 `;
-const ColorSelection = styled.div`
-  background: ${(props) => props.theme.color.secondary};
+const ColorSelection = styled.div<{ toggler: boolean }>`
+  background: ${(props) =>
+    props.toggler ? "black" : props.theme.color.secondary};
   margin: 10px;
   padding: 10px;
   font-size: ${(props) => props.theme.fontSize.min};
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 5px;
+  transition: 0.5s ease-in-out;
 `;
 const Select = styled.div<{ color: string }>`
   background: ${({ color }) => color};

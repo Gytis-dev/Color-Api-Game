@@ -15,11 +15,13 @@ export interface ElementInterface {
   color: string;
   name: string;
 }
-
 export interface UserState {
   userReducer: {
-    user: string;
+    user: string | null;
+    uuid: string | null;
     color: string;
+    theme: boolean;
+    lineHistory: number[];
   };
 }
 export interface Data {
@@ -51,3 +53,26 @@ export interface ItemData {
   };
 }
 [];
+export interface UserType {
+  user: string | null;
+  uuid: string | null;
+  color?: string | null;
+  theme?: false;
+  lineHistory?: any;
+}
+export interface PostObject {
+  x: number;
+  y: number;
+  name: string | null;
+  color: string | null;
+}
+export enum ApiRoutes {
+  board = "/board",
+  status = "/status",
+}
+export interface UrlParams {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}

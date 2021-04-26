@@ -1,8 +1,4 @@
-import {
-  FETCH_SUCCESS,
-  FETCH_LOADING,
-  FETCH_ERROR,
-} from "../actions/actionTypes";
+import { ATypes } from "../actions/actionTypes";
 
 interface StateInterface {
   data: Array<unknown>;
@@ -18,17 +14,17 @@ const initialState: StateInterface = {
 
 export const dataReducer = (state = initialState, action: any) => {
   switch (action.type) {
-    case FETCH_SUCCESS: {
+    case ATypes.FETCH_SUCCESS: {
       return {
         data: action.payload,
         loading: false,
         error: null,
       };
     }
-    case FETCH_LOADING: {
+    case ATypes.FETCH_LOADING: {
       return { data: [], loading: true, error: null };
     }
-    case FETCH_ERROR: {
+    case ATypes.FETCH_ERROR: {
       return { data: [], loading: false, error: action.payload };
     }
     default:

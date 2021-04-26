@@ -1,13 +1,7 @@
 import axios from "axios";
+import { PostObject, ApiRoutes, UrlParams } from "../types/globalTypes";
 
 const BASE_URL = "https://simutis.dev/api";
-
-interface UrlParams {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
 
 export const handleGetApi = async (
   url: string,
@@ -21,13 +15,15 @@ export const handleGetApi = async (
   return await promise.data;
 };
 
-export const handlePostApi = async (postObject: unknown): Promise<unknown> => {
+export const handlePostApi = async (
+  postObject: PostObject
+): Promise<unknown> => {
   return await axios({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    url: BASE_URL + "/board",
+    url: BASE_URL + ApiRoutes.board,
     data: postObject,
   });
 };
@@ -41,7 +37,7 @@ export const boardStatus = async (): Promise<{
 }> => {
   const promise = await axios({
     method: "GET",
-    url: BASE_URL + "/board" + "/status",
+    url: BASE_URL + ApiRoutes.board + ApiRoutes.status,
   });
   return await promise.data[0];
 };

@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
 
 export const config = firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -10,4 +11,23 @@ export const config = firebase.initializeApp({
   appId: process.env.REACT_APP_APP_ID,
 });
 
+export const db = firebase.firestore();
 export const auth = config.auth();
+
+export class Database {
+  static database = db.collection("users");
+
+  static createUserDocument(uuid: string): void {
+    this.database
+      .doc(uuid)
+      .set({
+        darkTheme: false,
+      })
+      .then(() => console.log("Document written succesfully"))
+      .catch((e) => console.log(e));
+  }
+
+  static async getUserDocument(uuid: string): Promise<any> {
+    return await this.database.doc(uuid).get();
+  }
+}
