@@ -1,8 +1,13 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { colorName, username, initialColors } from "../consts/index";
-import { setColor, setTheme, logout } from "../state/actions/actions";
+import { initialColors } from "../consts/index";
+import {
+  setColor,
+  setTheme,
+  logout,
+  setInitialTheme,
+} from "../state/actions/actions";
 import { UserState } from "../types/globalTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { auth, Database } from "../config/firebase";
@@ -32,15 +37,25 @@ export const MenuBar = (): JSX.Element => {
 
   const handleColorChange = (e: React.MouseEvent<HTMLDivElement>) => {
     const attribute = e.currentTarget.getAttribute("color");
-    dispatch(setColor(attribute));
-    if (attribute != null) sessionStorage.setItem("color", attribute);
+    if (uuid) {
+      try {
+        Database.getUserDocument(uuid).then((doc) => {
+          if (doc.exists) {
+            Database.database.doc(uuid).update({ color: attribute });
+            dispatch(setColor(attribute));
+          } else {
+            console.log("Document not found");
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
   const handleLogOut = () => {
     auth.signOut().then(() => {
       sessionStorage.removeItem("currentUser");
-      sessionStorage.removeItem("lineHistory");
-      sessionStorage.removeItem("color");
       dispatch(logout());
       history.push("/");
     });
@@ -67,13 +82,27 @@ export const MenuBar = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (username != null && colorName != null && user === null) {
-      dispatch(setColor(colorName));
+    if (uuid) {
+      try {
+        Database.getUserDocument(uuid).then((doc) => {
+          if (doc.exists) {
+            const userColor = doc.data()?.color;
+            const theme = doc.data()?.darkTheme;
+            dispatch(setColor(userColor));
+            dispatch(setInitialTheme(theme));
+            setThemeToggler(theme);
+          } else {
+            console.log("Document not found");
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
-  }, []);
+  }, [uuid]);
 
   return (
-    <MenuWrap status={toggle} userTheme={theme}>
+    <MenuWrap status={toggle} userTheme={themeToggler}>
       <Toggler
         status={toggle}
         userTheme={theme}

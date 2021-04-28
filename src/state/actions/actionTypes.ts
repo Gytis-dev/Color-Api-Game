@@ -8,4 +8,5 @@ export enum ATypes {
   SET_LINE = "SET_LINE",
   GET_LINES = "GET_LINES",
   LOG_OUT = "LOG_OUT",
+  INITIAL_THEME = "INITIAL_THEME",
 }

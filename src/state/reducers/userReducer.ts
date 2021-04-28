@@ -7,7 +7,7 @@ interface Action {
     user: string;
     uuid: string;
     color: string;
-    theme: string;
+    theme: boolean;
     coordinateX: number;
     coordinateY: number;
   };
@@ -16,7 +16,7 @@ interface Action {
 const initialState: UserType = {
   user: null,
   uuid: null,
-  color: "#51c4d3",
+  color: "",
   theme: false,
   lineHistory: [],
 };
@@ -65,6 +65,12 @@ export const userReducer = (state = initialState, action: Action) => {
         color: "#51c4d3",
         theme: false,
         lineHistory: [],
+      };
+    }
+    case ATypes.INITIAL_THEME: {
+      return {
+        ...state,
+        theme: action.payload,
       };
     }
     default: {

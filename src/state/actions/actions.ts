@@ -37,6 +37,12 @@ export const setTheme = () => {
     type: ATypes.SET_THEME,
   };
 };
+export const setInitialTheme = (theme: boolean) => {
+  return {
+    type: ATypes.INITIAL_THEME,
+    payload: theme,
+  };
+};
 export const setLineHistory = (line: {
   coordinateX: number;
   coordinateY: number;

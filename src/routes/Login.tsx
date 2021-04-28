@@ -53,7 +53,6 @@ export const Login = (): JSX.Element => {
             };
             dispatch(setUser(user));
             sessionStorage.setItem("currentUser", email);
-            sessionStorage.setItem("color", "#51c4d3");
             history.push("/dashboard");
           }
         })
