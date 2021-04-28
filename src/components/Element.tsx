@@ -18,5 +18,5 @@ export const Element = ({ details }: DetailsInterface): JSX.Element => {
   const { x, y } = details;
   const { name, color } = details.data;
 
-  return <Circle radius={7} fill={color} x={x} y={y} name={name} />;
+  return <Circle radius={4} fill={color} x={x} y={y} name={name} />;
 };

@@ -15,16 +15,32 @@ import {
 import { Stage, Layer } from "react-konva";
 import { params } from "../consts/index";
 import { auth } from "../config/firebase";
+import { Database } from "../config/firebase";
 
 export const Dashboard = (): JSX.Element => {
   const { data, loading } = useSelector((state: Data) => state.dataReducer);
-  const { color, user, lineHistory } = useSelector(
+  const { color, user, lineHistory, uuid } = useSelector(
     (state: UserState) => state.userReducer
   );
 
   let counter = 0;
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (uuid) {
+      try {
+        Database.getUserDocument(uuid).then((doc) => {
+          if (doc.exists) {
+            const lineData = doc.data().lines;
+            dispatch(getLineHistory(lineData));
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [uuid]);
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
     const coordinateX = event.clientX;
@@ -36,8 +52,21 @@ export const Dashboard = (): JSX.Element => {
       name: user,
       color: color,
     });
-    dispatch(setLineHistory({ coordinateX, coordinateY }));
-    sessionStorage.setItem("lineHistory", JSON.stringify(lineHistory));
+
+    if (uuid) {
+      try {
+        Database.getUserDocument(uuid).then((doc) => {
+          if (doc.exists) {
+            Database.database.doc(uuid).update({
+              lines: [...doc.data()?.lines, coordinateX, coordinateY],
+            });
+            dispatch(setLineHistory({ coordinateX, coordinateY }));
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
   useEffect(() => {
@@ -55,7 +84,6 @@ export const Dashboard = (): JSX.Element => {
         dispatch(setUser(userObject));
       }
     });
-
     setTimeout(function updateBoard() {
       boardStatus().then((res) => {
         const boardStatus = res.update;
@@ -67,14 +95,8 @@ export const Dashboard = (): JSX.Element => {
           });
         }
       });
-      setTimeout(updateBoard, 1000);
-    }, 1000);
-
-    let lines = sessionStorage.getItem("lineHistory");
-    if (lines != null) {
-      lines = JSON.parse(lines);
-      dispatch(getLineHistory(lines));
-    }
+      setTimeout(updateBoard, 700);
+    }, 700);
   }, []);
 
   return (

@@ -7,4 +7,5 @@ export enum ATypes {
   SET_COLOR = "SET_COLOR",
   SET_LINE = "SET_LINE",
   GET_LINES = "GET_LINES",
+  LOG_OUT = "LOG_OUT",
 }

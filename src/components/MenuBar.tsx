@@ -2,7 +2,7 @@ import styled from "styled-components";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { colorName, username, initialColors } from "../consts/index";
-import { setColor, setTheme } from "../state/actions/actions";
+import { setColor, setTheme, logout } from "../state/actions/actions";
 import { UserState } from "../types/globalTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { auth, Database } from "../config/firebase";
@@ -23,11 +23,12 @@ export const MenuBar = (): JSX.Element => {
   const [toggle, setToggle] = useState(true);
   const history = useHistory();
   const dispatch = useDispatch();
-  const [themeToggler, setThemeToggler] = useState(false);
 
   const { user, color, uuid, theme } = useSelector(
     (state: UserState) => state.userReducer
   );
+
+  const [themeToggler, setThemeToggler] = useState(false);
 
   const handleColorChange = (e: React.MouseEvent<HTMLDivElement>) => {
     const attribute = e.currentTarget.getAttribute("color");
@@ -40,6 +41,7 @@ export const MenuBar = (): JSX.Element => {
       sessionStorage.removeItem("currentUser");
       sessionStorage.removeItem("lineHistory");
       sessionStorage.removeItem("color");
+      dispatch(logout());
       history.push("/");
     });
   };

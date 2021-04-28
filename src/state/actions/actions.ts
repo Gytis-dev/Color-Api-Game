@@ -47,6 +47,10 @@ export const setLineHistory = (line: {
 export const getLineHistory = (arr: any) => {
   return { type: ATypes.GET_LINES, payload: arr };
 };
+export const logout = () => {
+  return { type: ATypes.LOG_OUT };
+};
+
 export const handleDataFetchThunk = () => (dispatch: any) => {
   dispatch(FetchLoading());
   handleGetApi(ApiRoutes.board, params)

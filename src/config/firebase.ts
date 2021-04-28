@@ -21,6 +21,7 @@ export class Database {
     this.database
       .doc(uuid)
       .set({
+        lines: [],
         darkTheme: false,
       })
       .then(() => console.log("Document written succesfully"))

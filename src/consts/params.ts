@@ -1,8 +1,8 @@
 export const params = {
   x: 10,
   y: 10,
-  w: 2500,
-  h: 2500,
+  w: 2000,
+  h: 1000,
 };
 
 export const username = sessionStorage.getItem("currentUser");

@@ -58,6 +58,15 @@ export const userReducer = (state = initialState, action: Action) => {
         lineHistory: action.payload,
       };
     }
+    case ATypes.LOG_OUT: {
+      return {
+        user: null,
+        uuid: null,
+        color: "#51c4d3",
+        theme: false,
+        lineHistory: [],
+      };
+    }
     default: {
       return state;
     }
