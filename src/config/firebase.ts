@@ -23,7 +23,7 @@ export class Database {
       .set({
         lines: [],
         darkTheme: false,
-        color: "blue",
+        color: "#aa2ee6",
       })
       .then(() => console.log("Document written succesfully"))
       .catch((e) => console.log(e));

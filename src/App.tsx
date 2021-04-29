@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { SignUp, Login, PrivateRoute } from "./routes/index";
-import { Dashboard } from "./routes/Dashboard";
+import { SignUp, Login, PrivateRoute, Dashboard } from "./routes/index";
 
 export const App = (): JSX.Element => {
   return (
