@@ -6,12 +6,6 @@ export const params = {
 };
 
 export const username = sessionStorage.getItem("currentUser");
-export const colorName = sessionStorage.getItem("color");
-
-export const removeItemsFromLocalStorage = (): void => {
-  localStorage.removeItem("currentUser");
-  localStorage.removeItem("color");
-};
 
 export const initialColors = [
   "#aa2ee6",

@@ -1,31 +1,37 @@
 import { ATypes } from "../actions/actionTypes";
+import { DataInterface } from "../../types/globalTypes";
 
 interface StateInterface {
   data: Array<unknown>;
-  loading: boolean | null;
+  isLoading: boolean | null;
   error: string | null;
 }
 
 const initialState: StateInterface = {
   data: [],
-  loading: false,
+  isLoading: false,
   error: null,
 };
 
-export const dataReducer = (state = initialState, action: any) => {
+interface DataActionType {
+  type: string;
+  payload: DataInterface[] | string;
+}
+
+export const dataReducer = (state = initialState, action: DataActionType) => {
   switch (action.type) {
     case ATypes.FETCH_SUCCESS: {
       return {
         data: action.payload,
-        loading: false,
+        isLoading: false,
         error: null,
       };
     }
     case ATypes.FETCH_LOADING: {
-      return { data: [], loading: true, error: null };
+      return { data: [], isLoading: true, error: null };
     }
     case ATypes.FETCH_ERROR: {
-      return { data: [], loading: false, error: action.payload };
+      return { data: [], isLoading: false, error: action.payload };
     }
     default:
       return state;

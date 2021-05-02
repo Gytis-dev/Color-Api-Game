@@ -21,7 +21,7 @@ export interface UserState {
     uuid: string | null;
     color: string;
     theme: boolean;
-    lineHistory: number[];
+    lineHistory: any;
   };
 }
 export interface Data {
@@ -33,11 +33,15 @@ export interface Data {
       data: {
         name: string;
         color: string;
-        data: any;
+        data:
+          | {
+              radius?: number;
+            }
+          | boolean;
         createdAt: string;
       };
     }[];
-    loading: boolean;
+    isLoading: boolean;
     error: string | null;
   };
 }
@@ -48,7 +52,11 @@ export interface ItemData {
   data: {
     name: string;
     color: string;
-    data: any;
+    data:
+      | {
+          radius?: number;
+        }
+      | boolean;
     createdAt: string;
   };
 }
@@ -75,4 +83,18 @@ export interface UrlParams {
   y: number;
   w: number;
   h: number;
+}
+
+export interface DataInterface {
+  _id: string;
+  x: number;
+  y: number;
+  data: {
+    color: string;
+    createdAt: string;
+    data: {
+      radius?: number;
+    } | null;
+    name: string;
+  };
 }

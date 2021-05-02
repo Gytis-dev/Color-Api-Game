@@ -18,7 +18,7 @@ import { auth } from "../config/firebase";
 import { Database } from "../config/firebase";
 
 export const Dashboard = (): JSX.Element => {
-  const { data, loading } = useSelector((state: Data) => state.dataReducer);
+  const { data, isLoading } = useSelector((state: Data) => state.dataReducer);
   const { color, user, lineHistory, uuid } = useSelector(
     (state: UserState) => state.userReducer
   );
@@ -32,7 +32,7 @@ export const Dashboard = (): JSX.Element => {
       try {
         Database.getUserDocument(uuid).then((doc) => {
           if (doc.exists) {
-            const lineData = doc.data().lines;
+            const lineData = doc.data()?.lines;
             dispatch(getLineHistory(lineData));
           }
         });
@@ -104,7 +104,7 @@ export const Dashboard = (): JSX.Element => {
       <MenuBar />
       <GridWrapper>
         <Grid onClick={(e) => handlePost(e)}>
-          {loading ? (
+          {isLoading ? (
             <Loader />
           ) : (
             <Stage width={window.innerWidth} height={window.innerHeight}>

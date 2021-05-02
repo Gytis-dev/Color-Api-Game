@@ -1,9 +1,10 @@
 import { ATypes } from "../actions/actionTypes";
-import { ApiRoutes, UserType } from "../../types/globalTypes";
+import { ApiRoutes, UserType, DataInterface } from "../../types/globalTypes";
 import { params } from "../../consts/index";
 import { handleGetApi } from "../../apis/config";
+import { Action, Dispatch } from "redux";
 
-export const fetchSuccess = (data: Array<unknown>) => {
+export const fetchSuccess = (data: DataInterface[] | Array<unknown>) => {
   return {
     type: ATypes.FETCH_SUCCESS,
     payload: data,
@@ -50,14 +51,14 @@ export const setLineHistory = (line: {
   return { type: ATypes.SET_LINE, payload: line };
 };
 
-export const getLineHistory = (arr: any) => {
+export const getLineHistory = (arr: number[]) => {
   return { type: ATypes.GET_LINES, payload: arr };
 };
 export const logout = () => {
   return { type: ATypes.LOG_OUT };
 };
 
-export const handleDataFetchThunk = () => (dispatch: any) => {
+export const handleDataFetchThunk = () => (dispatch: Dispatch<Action>) => {
   dispatch(FetchLoading());
   handleGetApi(ApiRoutes.board, params)
     .then((res) => {

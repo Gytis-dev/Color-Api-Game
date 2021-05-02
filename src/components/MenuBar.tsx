@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { Colors } from "../components/index";
 import { initialColors } from "../consts/index";
 import {
   setColor,
@@ -28,21 +29,19 @@ export const MenuBar = (): JSX.Element => {
   const [toggle, setToggle] = useState(true);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [themeToggler, setThemeToggler] = useState(false);
 
   const { user, color, uuid, theme } = useSelector(
     (state: UserState) => state.userReducer
   );
 
-  const [themeToggler, setThemeToggler] = useState(false);
-
-  const handleColorChange = (e: React.MouseEvent<HTMLDivElement>) => {
-    const attribute = e.currentTarget.getAttribute("color");
+  const handleColorChange = (colorName: string) => {
     if (uuid) {
       try {
         Database.getUserDocument(uuid).then((doc) => {
           if (doc.exists) {
-            Database.database.doc(uuid).update({ color: attribute });
-            dispatch(setColor(attribute));
+            Database.database.doc(uuid).update({ color: colorName });
+            dispatch(setColor(colorName));
           } else {
             console.log("Document not found");
           }
@@ -130,44 +129,14 @@ export const MenuBar = (): JSX.Element => {
         </Section>
         <Section>
           <ColorSelection toggler={themeToggler}>
-            <Select
-              color={initialColors[0]}
-              onClick={handleColorChange}
-            ></Select>
-            <Select
-              color={initialColors[1]}
-              onClick={handleColorChange}
-            ></Select>
-            <Select
-              color={initialColors[2]}
-              onClick={handleColorChange}
-            ></Select>
-            <Select
-              color={initialColors[3]}
-              onClick={handleColorChange}
-            ></Select>
-            <Select
-              color={initialColors[4]}
-              onClick={handleColorChange}
-            ></Select>
-            <Select
-              color={initialColors[5]}
-              onClick={handleColorChange}
-            ></Select>
-            <Select
-              color={initialColors[6]}
-              onClick={handleColorChange}
-            ></Select>
-            <Select
-              color={initialColors[7]}
-              onClick={handleColorChange}
-            ></Select>
-            <Select
-              color={initialColors[8]}
-              onClick={handleColorChange}
-            ></Select>
+            {initialColors.map((item: string) => (
+              <Colors
+                key={item}
+                color={item}
+                changeColor={(colorName) => handleColorChange(colorName)}
+              />
+            ))}
           </ColorSelection>
-
           <ThemeWrapper toggler={themeToggler}>
             <ThemeText>{themeToggler ? "Dark mode" : "Light mode"}</ThemeText>
             <ThemeToggler toggler={themeToggler}>
@@ -273,19 +242,7 @@ const ColorSelection = styled.div<{ toggler: boolean }>`
   padding: 10px;
   font-size: ${(props) => props.theme.fontSize.min};
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 5px;
   transition: 0.5s ease-in-out;
-`;
-const Select = styled.div<{ color: string }>`
-  background: ${({ color }) => color};
-  border: 2px solid white;
-  text-align: center;
-  padding: 15px;
-  border-radius: 3px;
-  position: relative;
-  cursor: pointer;
-  &:hover {
-    border: 2px solid grey;
-  }
 `;

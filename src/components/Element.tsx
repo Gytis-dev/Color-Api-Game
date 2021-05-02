@@ -11,7 +11,6 @@ export interface Props {
       createdAt: string;
     };
   };
-  test: any;
 }
 
 export const Element = ({ details }: DetailsInterface): JSX.Element => {

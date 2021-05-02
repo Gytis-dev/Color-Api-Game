@@ -29,7 +29,11 @@ export class Database {
       .catch((e) => console.log(e));
   }
 
-  static async getUserDocument(uuid: string): Promise<any> {
+  static async getUserDocument(
+    uuid: string
+  ): Promise<
+    firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
+  > {
     return await this.database.doc(uuid).get();
   }
 }
