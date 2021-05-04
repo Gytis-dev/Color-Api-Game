@@ -16,10 +16,11 @@ import { Stage, Layer } from "react-konva";
 import { params } from "../consts/index";
 import { auth } from "../config/firebase";
 import { Database } from "../config/firebase";
+import { ThemeProvider } from "styled-components";
 
 export const Dashboard = (): JSX.Element => {
   const { data, isLoading } = useSelector((state: Data) => state.dataReducer);
-  const { color, user, lineHistory, uuid } = useSelector(
+  const { color, user, lineHistory, uuid, theme } = useSelector(
     (state: UserState) => state.userReducer
   );
 
@@ -101,36 +102,38 @@ export const Dashboard = (): JSX.Element => {
 
   return (
     <>
-      <MenuBar />
-      <GridWrapper>
-        <Grid onClick={(e) => handlePost(e)}>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <Stage width={window.innerWidth} height={window.innerHeight}>
-              <Layer>
-                {data.map((item: ItemData) => {
-                  const scaledItem = {
-                    ...item,
-                    x: item.x,
-                    y: item.y,
-                  };
-                  return <Element key={item._id} details={scaledItem} />;
-                })}
-                <Lines linePoints={lineHistory} color={color} />
-              </Layer>
-            </Stage>
-          )}
-        </Grid>
-      </GridWrapper>
+      <ThemeProvider theme={{ theme }}>
+        <MenuBar />
+        <GridWrapper>
+          <Grid onClick={(e) => handlePost(e)}>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <Stage width={window.innerWidth} height={window.innerHeight}>
+                <Layer>
+                  {data.map((item: ItemData) => {
+                    const scaledItem = {
+                      ...item,
+                      x: item.x,
+                      y: item.y,
+                    };
+                    return <Element key={item._id} details={scaledItem} />;
+                  })}
+                  <Lines linePoints={lineHistory} color={color} />
+                </Layer>
+              </Stage>
+            )}
+          </Grid>
+        </GridWrapper>
+      </ThemeProvider>
     </>
   );
 };
 
 const Grid = styled.div`
-  // background-image: url("https://images.unsplash.com/photo-1584531979583-18c5c4b25efc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80");
   background-position: cover;
-  background: ${(props) => props.theme.color.secondary};
+  background: ${(props) =>
+    props.theme.theme ? "black" : props.theme.color.secondary};
   width: 100%;
   height: 100vh;
   position: relative;
