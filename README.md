@@ -1,1 +1,1 @@
-# color-api-game
+# Switch to master branch for code review
