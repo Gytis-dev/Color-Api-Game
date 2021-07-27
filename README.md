@@ -4,9 +4,20 @@ Kilo Health Academy project built with React, TypeScript, Redux-thunk, Styled-co
 
 ## Screenshots
 
+### Singup
+
 ![Alt text](src/assets/images/signuppicture.jpg?raw=true "signup")
+
+### Login
+
 ![Alt text](src/assets/images/loginpicture.jpg?raw=true "login")
+
+### Dashboard
+
 ![Alt text](src/assets/images/shapes.jpg?raw=true "shapes")
+
+### Dashboard (dark theme)
+
 ![Alt text](src/assets/images/shapesdark.jpg?raw=true "shapes dark")
 
 ## Get started
