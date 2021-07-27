@@ -1,13 +1,13 @@
 # Color Api Game
 
-Kilo Health Academy project built with React, TypeScript, Redux-thunk, Styled-components and Firebase. Register users and draw unique figures in the screen. Each mouse click sends data object with its (X, Y) coordinates in the screen to a back end API. Project was built for learning Redux, Typescript purposes.
+Kilo Health Academy project built with React, TypeScript, Redux-thunk, Styled-components and Firebase. Register users and draw unique figures in the screen. Each mouse click sends a data object with its (X, Y) coordinates in the screen to a back end API. Project was built in order to learn Redux and Typescript.
 
 ## Screenshots
 
-![Alt text](src/assets/images/signuppicture.JPG?raw=true "signup")
-![Alt text](src/assets/images/loginpicture.JPG?raw=true "login")
-![Alt text](src/assets/images/shapes.JPG?raw=true "shapes")
-![Alt text](src/assets/images/shapesdark.JPG?raw=true "shapes dark")
+![Alt text](src/assets/images/signuppicture.jpg?raw=true "signup")
+![Alt text](src/assets/images/loginpicture.jpg?raw=true "login")
+![Alt text](src/assets/images/shapes.jpg?raw=true "shapes")
+![Alt text](src/assets/images/shapesdark.jpg?raw=true "shapes dark")
 
 ## Get started
 
